@@ -1,6 +1,6 @@
-const s10chLocalStorageKey = "s10ch";
+export const s10chLocalStorageKey = "s10ch";
 
-const baslangicDegerleri = {
+export const baslangicDegerleri = {
   notlar: [
     {
       id: "75g1IyB8JLehAr0Lr5v3p",
@@ -14,7 +14,7 @@ function localStorageStateYaz(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-function localStorageStateOku(key) {
+export function localStorageStateOku(key) {
   return JSON.parse(localStorage.getItem(key));
 }
 
@@ -24,6 +24,24 @@ function baslangicNotlariniGetir(key) {
   if (eskiNotlar) {
     return localStorageStateOku(key);
   } else {
-    return baslangicDegerleri
+    return baslangicDegerleri;
+  }
+}
+
+export default function reducer(state, action) {
+  switch (action.type) {
+    case "NOT_EKLE":
+      const yeniNotlar = [...state.notlar, action.payload];
+      localStorageStateYaz(s10chLocalStorageKey, {
+        ...state,
+        notlar: yeniNotlar,
+      });
+      return { ...state, notlar: yeniNotlar };
+    case "NOT_SIL":
+      const notlar = state.notlar.filter((not) => not.id !== action.payload);
+      return { ...state, notlar };
+
+    default:
+      return state;
   }
 }
